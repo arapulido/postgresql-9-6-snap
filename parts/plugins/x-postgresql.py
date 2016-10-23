@@ -25,9 +25,6 @@ class PostgreSQLPlugin(snapcraft.BasePlugin):
     def build(self):
         super().build()
 
-        my_cmd = ['env']
-        self.run(my_cmd)
-
         for patch in self.options.patches:
             patch_cmd = ['patch', '-p1', '--input', patch]
             self.run(patch_cmd)
