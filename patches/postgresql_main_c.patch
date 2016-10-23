@@ -1,0 +1,18 @@
+--- ./src/backend/main/main.c
++++ main.c
+@@ -386,6 +386,7 @@
+ check_root(const char *progname)
+ {
+ #ifndef WIN32
++#ifndef SNAPPY
+ 	if (geteuid() == 0)
+ 	{
+ 		write_stderr("\"root\" execution of the PostgreSQL server is not permitted.\n"
+@@ -394,6 +395,7 @@
+ 				  "more information on how to properly start the server.\n");
+ 		exit(1);
+ 	}
++#endif
+ 
+ 	/*
+ 	 * Also make sure that real and effective uids are the same. Executing as

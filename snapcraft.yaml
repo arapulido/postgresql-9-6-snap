@@ -1,0 +1,343 @@
+name: postgresql-9-6
+version: 9.6.0
+summary: PostgreSQL 9.6 relational database server
+description: >
+  PostgreSQL is a powerful, open source object-relational database
+  system. It has more than 15 years of active development and a proven
+  architecture that has earned it a strong reputation for reliability,
+  data integrity, and correctness. It runs on all major operating systems,
+  including Linux, UNIX (AIX, BSD, HP-UX, SGI IRIX, Mac OS X, Solaris,
+  Tru64), and Windows. It is fully ACID compliant, has full support for
+  foreign keys, joins, views, triggers, and stored procedures (in multiple
+  languages). It includes most SQL:2008 data types, including INTEGER,
+  NUMERIC, BOOLEAN, CHAR, VARCHAR, DATE, INTERVAL, and TIMESTAMP. It also
+  supports storage of binary large objects, including pictures, sounds, or
+  video. It has native programming interfaces for C/C++, Java, .Net, Perl,
+  Python, Ruby, Tcl, ODBC, among others, and exceptional documentation. An
+  enterprise class database, PostgreSQL boasts sophisticated features such
+  as Multi-Version Concurrency Control (MVCC), point in time recovery,
+  tablespaces, asynchronous replication, nested transactions (savepoints),
+  online/hot backups, a sophisticated query planner/optimizer, and write
+  ahead logging for fault tolerance. It supports international character
+  sets, multibyte character encodings, Unicode, and it is locale-aware
+  for sorting, case-sensitivity, and formatting. It is highly scalable
+  both in the sheer quantity of data it can manage and in the number of
+  concurrent users it can accommodate. There are active PostgreSQL systems
+  in production environments that manage in excess of 4 terabytes of data.
+confinement: strict
+grade: stable
+apps:
+  bash:
+    command: bin/run_bash
+    plugs:
+      - network
+      - network-bind
+      - home
+
+  psql:
+    command: bin/psql
+    plugs:
+      - network  # Tools need network to connect to remote databases.
+      - home     # Tools need home for ~/.pgpass and ~/.pg_service.conf
+
+  createdb:
+    command: bin/createdb
+    plugs:
+      - network
+      - home
+
+  dropdb:
+    command: bin/dropdb
+    plugs:
+      - network
+      - home
+
+  createlang:
+    command: bin/createlang
+    plugs:
+      - network
+      - home
+
+  droplang:
+    command: bin/droplang
+    plugs:
+      - network
+      - home
+
+  createuser:
+    command: bin/createuser
+    plugs:
+      - network
+      - home
+
+  dropuser:
+    command: bin/dropuser
+    plugs:
+      - network
+      - home
+
+  pg-basebackup:
+    command: bin/pg_basebackup
+    plugs:
+      - network
+      - home
+
+  pg-dump:
+    command: bin/pg_dump
+    plugs:
+      - network
+      - home
+
+  pg-dumpall:
+    command: bin/pg_dumpall
+    plugs:
+      - network
+      - home
+
+  pg-restore:
+    command: bin/pg_restore
+    plugs:
+      - network
+      - home
+
+  pg-isready:
+    command: bin/pg_isready
+    plugs:
+      - network
+
+  clusterdb:
+    command: bin/clusterdb
+    plugs:
+      - network
+      - home
+
+  reindexdb:
+    command: bin/reindexdb
+    plugs:
+      - network
+      - home
+
+  vacuumdb:
+    command: bin/vacuumdb
+    plugs:
+      - network
+      - home
+
+  vacuumlo:
+    command: bin/vacuumlo
+    plugs:
+      - network
+      - home
+
+  ecpg:
+    command: bin/ecpg
+    plugs:
+      - home
+
+  pgbench:
+    command: bin/pgbench
+    plugs:
+      - network
+      - home
+
+  pg-config:
+    command: bin/pg_config
+
+  pg-controldata:
+    command: bin/pg_controldata
+
+  postgres:
+    command: bin/postgres
+    plugs:
+      - network
+      - network-bind
+      - home
+
+  pg-xlogdump:
+    command: bin/pg_xlogdump
+    plugs:
+      - home
+
+  pg-rewind:
+    command: bin/pg_rewind
+    plugs:
+      - network
+      - home
+
+  pg-receivexlog:
+    command: bin/pg_receivexlog
+    plugs:
+      - network
+      - home
+
+  pg-recvlogical:
+    command: bin/pg_recvlogical
+    plugs:
+      - network
+      - home
+
+  initdb:
+    command: bin/initdb
+    plugs:
+      - home
+
+  oid2name:
+    command: bin/oid2name
+    plugs:
+      - network
+      - home
+
+  pg-resetxlog:
+    command: bin/pg_resetxlog
+    plugs:
+      - home
+
+  pg-ctl:
+    command: bin/pg_ctl
+    plugs:
+      - home
+
+  # pg_upgrade
+  # pltcl_delmod
+  # pltcl_listmod
+  # pltcl_loadmod
+  # pg_archivecleanup
+  # pg_standby
+  # pg_test_fsync
+  # pg_test_timing
+
+  postgresql:
+    command: bin/run_postgresql
+    daemon: simple
+    plugs:
+      - network
+      - network-bind
+
+  logrotate:
+    command: bin/run_logrotate
+    daemon: simple
+
+parts:
+  postgresql:
+    after:
+      - plugins-check
+    plugin: postgresql
+    source: https://ftp.postgresql.org/pub/source/v9.6.0/postgresql-9.6.0.tar.bz2
+    check: true
+    configflags:
+      # - --with-extra-version=snap1
+      - --with-perl
+      - --with-python
+      - --with-tcl
+      - --with-uuid=e2fs
+      - --with-libxml
+      - --with-libxslt
+      - --enable-nls
+      - --with-openssl
+      - --with-pam
+      - --with-ldap
+      - --with-systemd
+      - --with-system-tzdata=/usr/share/zoneinfo
+      # - --with-gssapi
+      # - --with-bonjour
+    patches:
+      - ../../../patches/postgresql_initdb_c.patch
+      - ../../../patches/postgresql_main_c.patch
+      - ../../../patches/postgresql_option_c.patch
+      - ../../../patches/postgresql_pg_ctl_c.patch
+      - ../../../patches/postgresql_pg_resetxlog_c.patch
+      - ../../../patches/postgresql_pg_rewind_c.patch
+    build-packages:
+      - libreadline-dev
+      - zlib1g-dev
+      - perl
+      - libperl-dev
+      - uuid-dev
+      - python-all-dev
+      - tcl-dev
+      - libxml2-dev
+      - libxslt1-dev
+      - flex
+      - bison
+      - openjade
+      - docbook
+      - docbook-dsssl
+      - docbook-xsl
+      - docbook-xml
+      - libxml2-utils
+      - openjade1.3
+      - opensp
+      - xsltproc
+      - gettext
+      - openssl
+      - libssl-dev
+      - locales-all
+      - libpam0g-dev
+      - libldap2-dev
+      - libsystemd-dev
+    stage-packages:
+      - zlib1g
+      - perl
+      - python-all
+      - tcl
+      - libxml2
+      - libuuid1
+      - libxslt1.1
+      - locales-all
+      - locales
+      - gettext
+      - openssl
+      - libpam0g
+      - libldap-2.4-2
+      - libsystemd0
+    #    organize:
+    #  src/COPYRIGHT: meta/license.txt
+    #stage:
+    #  - meta/license.txt
+    #snap:
+    #  - meta/license.txt
+
+  supportpackages:
+    plugin: nil
+    stage-packages:
+      - bash  # For debugging and administration
+      # The default psql editor is vi. Other editors will fail since they
+      # are not installed inside the containment.
+      - vim-tiny
+      - nano
+      # Pagers for psql
+      - util-linux  # more
+      - less
+      # Commonly used for log shipping
+      - rsync
+      # - coreutils  # For debugging, /usr/bin/env
+      # - libc-bin  # For debugging, /usr/bin/locale
+    organize:
+      usr/bin/vim.tiny: usr/bin/vi
+  plugins-check:
+    plugin: flake8
+    source: parts/plugins
+  pgsnap-check:
+    after:
+      - plugins-check
+    plugin: flake8
+    source: snapcraft
+  pgsnap:
+    # This part detects PostgreSQL command line tools and generates the
+    # necessary wrappers, and must run after the postgresql part has staged
+    # them.
+    after:
+      - pgsnap-check
+      - postgresql
+    plugin: python
+    python-version: python3
+    source: snapcraft
+  meta:
+    plugin: dump
+    source: .
+    organize:
+      snapcraft/icon.svg: setup/gui/icon.svg
+    stage:
+      - setup/gui/icon.svg
+    snap:
+      - setup/gui/icon.svg

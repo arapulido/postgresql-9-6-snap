@@ -1,0 +1,18 @@
+--- ./src/bin/pg_resetxlog/pg_resetxlog.c
++++ pg_resetxlog.c
+@@ -301,6 +301,7 @@
+ 	 * the data directory.
+ 	 */
+ #ifndef WIN32
++#ifndef SNAPPY
+ 	if (geteuid() == 0)
+ 	{
+ 		fprintf(stderr, _("%s: cannot be executed by \"root\"\n"),
+@@ -309,6 +310,7 @@
+ 				progname);
+ 		exit(1);
+ 	}
++#endif
+ #endif
+ 
+ 	get_restricted_token(progname);

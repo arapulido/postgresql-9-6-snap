@@ -1,0 +1,17 @@
+--- ./src/bin/pg_rewind/pg_rewind.c
++++ pg_rewind.c 
+@@ -184,12 +184,14 @@
+ 	 * the data directory.
+ 	 */
+ #ifndef WIN32
++#ifndef SNAPPY
+ 	if (geteuid() == 0)
+ 	{
+ 		fprintf(stderr, _("cannot be executed by \"root\"\n"));
+ 		fprintf(stderr, _("You must run %s as the PostgreSQL superuser.\n"),
+ 				progname);
+ 	}
++#endif
+ #endif
+ 
+ 	get_restricted_token(progname);

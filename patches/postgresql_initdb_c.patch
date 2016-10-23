@@ -1,0 +1,18 @@
+--- ./src/bin/initdb/initdb.c
++++ initdb.c
+@@ -797,6 +797,7 @@
+ 	const char *username;
+ 
+ #ifndef WIN32
++#ifndef SNAPPY
+ 	if (geteuid() == 0)			/* 0 is root's uid */
+ 	{
+ 		fprintf(stderr,
+@@ -807,6 +808,7 @@
+ 				progname);
+ 		exit(1);
+ 	}
++#endif
+ #endif
+ 
+ 	username = get_user_name_or_exit(progname);

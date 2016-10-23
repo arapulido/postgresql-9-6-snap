@@ -1,0 +1,18 @@
+--- ./src/bin/pg_ctl/pg_ctl.c
++++ pg_ctl.c
+@@ -2170,6 +2170,7 @@
+ 	 * Disallow running as root, to forestall any possible security holes.
+ 	 */
+ #ifndef WIN32
++#ifndef SNAPPY
+ 	if (geteuid() == 0)
+ 	{
+ 		write_stderr(_("%s: cannot be run as root\n"
+@@ -2179,6 +2180,7 @@
+ 					 progname);
+ 		exit(1);
+ 	}
++#endif
+ #endif
+ 
+ 	env_wait = getenv("PGCTLTIMEOUT");
